@@ -14,14 +14,12 @@ public class ThresholdConfiguration : IEntityTypeConfiguration<ThresholdEf>
         builder.Property(x => x.Parameter)
             .HasConversion(
                 v =>  v.ToString(), 
-                v => (RftsParameter)Enum.Parse(typeof(RftsParameter), v))
+                v => (ThresholdParameter)Enum.Parse(typeof(ThresholdParameter), v))
             .IsUnicode(false)
             .IsRequired();
 
         builder.Property(x => x.IsEnabled).IsRequired();
-        builder.Property(x => x.IsSimple).IsRequired();
 
-        builder.Property(x => x.SimpleValue).IsRequired(false);
         builder.Property(x => x.Minor).IsRequired(false);
         builder.Property(x => x.Major).IsRequired(false);
         builder.Property(x => x.Critical).IsRequired(false);

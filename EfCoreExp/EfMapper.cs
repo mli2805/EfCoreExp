@@ -1,67 +1,56 @@
-﻿namespace EfCoreExp
+﻿namespace EfCoreExp;
+
+public static class EfMapper
 {
-    public static class EfMapper
+    public static AlarmProfile FromEf(this AlarmProfileEf alarmProfileEf)
     {
-        public static AlarmProfile FromEf(this AlarmProfileEf alarmProfileEf)
+        return new AlarmProfile()
         {
-            return new AlarmProfile()
-            {
-                Id = alarmProfileEf.Id,
-                Kind = alarmProfileEf.Kind,
-                Name = alarmProfileEf.Name,
-                IsProvisioningMode = alarmProfileEf.IsProvisioningMode,
+            Id = alarmProfileEf.Id,
+            Kind = alarmProfileEf.Kind,
+            Name = alarmProfileEf.Name,
+            IsProvisioningMode = alarmProfileEf.IsProvisioningMode,
 
-                Thresholds = alarmProfileEf.Thresholds.Select(t => t.FromEf()).ToList(),
-            };
-        }
+            Thresholds = alarmProfileEf.Thresholds.Select(t => t.FromEf()).ToList(),
+        };
+    }
 
-        public static AlarmProfileEf ToEf(this AlarmProfile alarmProfile)
+    public static AlarmProfileEf ToEf(this AlarmProfile alarmProfile)
+    {
+        return new AlarmProfileEf()
         {
-            return new AlarmProfileEf()
-            {
-                Id = alarmProfile.Id,
-                Kind = alarmProfile.Kind,
-                Name = alarmProfile.Name,
-                IsProvisioningMode = alarmProfile.IsProvisioningMode,
+            Id = alarmProfile.Id,
+            Kind = alarmProfile.Kind,
+            Name = alarmProfile.Name,
+            IsProvisioningMode = alarmProfile.IsProvisioningMode,
 
-                Thresholds = alarmProfile.Thresholds.Select(t => t.ToEf()).ToList(),
-            };
-        }
+            Thresholds = alarmProfile.Thresholds.Select(t => t.ToEf()).ToList(),
+        };
+    }
 
-        public static Threshold FromEf(this ThresholdEf thresholdEf)
+    public static Threshold FromEf(this ThresholdEf thresholdEf)
+    {
+        return new Threshold()
         {
-            return new Threshold()
-            {
-                Id = thresholdEf.Id,
-                Parameter = thresholdEf.Parameter,
-                IsEnabled = thresholdEf.IsEnabled,
-                IsSimple = thresholdEf.IsSimple,
-                SimpleValue = thresholdEf.SimpleValue,
-                IsMinorEnabled = thresholdEf.IsMinorEnabled,
-                Minor = thresholdEf.Minor,
-                IsMajorEnabled = thresholdEf.IsMajorEnabled,
-                Major = thresholdEf.Major,
-                IsCriticalEnabled = thresholdEf.IsCriticalEnabled,
-                Critical = thresholdEf.Critical,
-            };
-        }
+            Id = thresholdEf.Id,
+            Parameter = thresholdEf.Parameter,
+            IsEnabled = thresholdEf.IsEnabled,
+            Minor = thresholdEf.Minor,
+            Major = thresholdEf.Major,
+            Critical = thresholdEf.Critical,
+        };
+    }
 
-        public static ThresholdEf ToEf(this Threshold threshold)
+    public static ThresholdEf ToEf(this Threshold threshold)
+    {
+        return new ThresholdEf()
         {
-            return new ThresholdEf()
-            {
-                Id = threshold.Id,
-                Parameter = threshold.Parameter,
-                IsEnabled = threshold.IsEnabled,
-                IsSimple = threshold.IsSimple,
-                SimpleValue = threshold.SimpleValue,
-                IsMinorEnabled = threshold.IsMinorEnabled,
-                Minor = threshold.Minor,
-                IsMajorEnabled = threshold.IsMajorEnabled,
-                Major = threshold.Major,
-                IsCriticalEnabled = threshold.IsCriticalEnabled,
-                Critical = threshold.Critical,
-            };
-        }
+            Id = threshold.Id,
+            Parameter = threshold.Parameter,
+            IsEnabled = threshold.IsEnabled,
+            Minor = threshold.Minor,
+            Major = threshold.Major,
+            Critical = threshold.Critical,
+        };
     }
 }
