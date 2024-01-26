@@ -16,6 +16,8 @@ public class AlarmProfile
     public bool IsProvisioningMode { get; set; }
 
     public List<Threshold> Thresholds { get; set; } = null!;
+    public List<MonitoringPort> MonitoringPorts { get; set; } = null!;
+
 }
 
 public class AlarmProfileEf
@@ -26,4 +28,5 @@ public class AlarmProfileEf
     public bool IsProvisioningMode { get; set; }
 
     public ICollection<ThresholdEf> Thresholds { get; set; } = null!;
+    public ICollection<MonitoringPortEf> MonitoringPorts { get; set; } = null!;
 }

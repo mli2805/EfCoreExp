@@ -27,5 +27,5 @@ public class ThresholdEf
     public double? Critical { get; set; }
 
 
-    public int? AlarmProfileId { get; set; }
+    public int? AlarmProfileId { get; set; } // foreign key
 }

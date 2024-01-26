@@ -53,4 +53,20 @@ public static class EfMapper
             Critical = threshold.Critical,
         };
     }
+
+    public static MonitoringPort FromEf(this MonitoringPortEf monitoringPortEf)
+    {
+        return new MonitoringPort()
+        {
+            Id = monitoringPortEf.Id,
+        };
+    }
+
+    public static MonitoringPortEf ToEf(this MonitoringPort monitoringPort)
+    {
+        return new MonitoringPortEf()
+        {
+            Id = monitoringPort.Id,
+        };
+    }
 }

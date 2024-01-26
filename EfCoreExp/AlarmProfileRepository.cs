@@ -10,6 +10,9 @@ public interface IAlarmProfileRepository
 
     Task<AlarmProfile?> GetById(int id, CancellationToken ct);
 
+    Task AssignToMonitoringPort(int alarmProfileId, int monitoringPortId, CancellationToken ct);
+    Task<AlarmProfile?> GetForMonitoringPort(int monitoringPortId, CancellationToken ct);
+
     Task UpdateAlarmProfile(int id, AlarmProfilePatch patch, CancellationToken ct);
 }
 
@@ -19,6 +22,7 @@ public class AlarmProfileRepository(MyContext myContext) : IAlarmProfileReposito
     {
         var alarmProfilesEf = await myContext.AlarmProfiles
             .Include(x => x.Thresholds)
+            .Include(x=>x.MonitoringPorts)
             .ToListAsync(ct);
 
         var alarmProfiles = alarmProfilesEf.Select(a => a.FromEf()).ToList();
@@ -46,9 +50,46 @@ public class AlarmProfileRepository(MyContext myContext) : IAlarmProfileReposito
 
     public async Task<AlarmProfile?> GetById(int id, CancellationToken ct)
     {
-        var alarmProfileEf = await myContext.AlarmProfiles.FirstOrDefaultAsync(a => a.Id == id, ct);
+        var alarmProfileEf = await myContext.AlarmProfiles
+            .Include(x=>x.Thresholds)
+            .Include(x=>x.MonitoringPorts)
+            .FirstOrDefaultAsync(a => a.Id == id, ct);
         return alarmProfileEf?.FromEf() ?? null;
     }
+
+    public async Task AssignToMonitoringPort(int alarmProfileId, int monitoringPortId, CancellationToken ct)
+    {
+        var alarmProfileEf = await myContext.AlarmProfiles
+            .Include(x=>x.Thresholds)
+            .Include(x=>x.MonitoringPorts)
+            .FirstOrDefaultAsync(a => a.Id == alarmProfileId, ct);
+
+        if (alarmProfileEf == null)
+        {
+            throw new NullReferenceException($"Alarm profile {alarmProfileId} not found");
+        }
+
+        var monitoringPortEf = await myContext.MonitoringPorts.SingleAsync(m => m.Id == monitoringPortId, ct);
+        if (monitoringPortEf == null)
+        {
+            throw new NullReferenceException($"Monitoring port {monitoringPortId} not found");
+        }
+
+        alarmProfileEf.MonitoringPorts.Add(monitoringPortEf);
+        await myContext.SaveChangesAsync(ct);
+    }
+
+    public async Task<AlarmProfile?> GetForMonitoringPort(int monitoringPortId, CancellationToken ct)
+    {
+        var alarmProfileEf = await myContext.AlarmProfiles
+            .Include(x => x.Thresholds)
+            .Include(x => x.MonitoringPorts)
+            .FirstOrDefaultAsync(a => a.MonitoringPorts
+                .Select(m=>m.Id).Contains(monitoringPortId), ct);
+
+        return alarmProfileEf?.FromEf() ?? null;
+    }
+
 
     public async Task UpdateAlarmProfile(int id, AlarmProfilePatch patch, CancellationToken ct)
     {
