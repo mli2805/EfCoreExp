@@ -18,6 +18,8 @@ internal class Program
         await CheckAssignAlarmProfileToMonitoringPort();
         await CheckDeleteAlarmProfile();
 
+        await CheckUpdateAlarmProfile();
+
         Console.WriteLine("Done.");
         Console.WriteLine("");
         Console.WriteLine("");
@@ -112,5 +114,19 @@ internal class Program
 
         var alarmProfile = await alarmProfileRepo.GetForMonitoringPort(3, ct);
         Debug.Assert(alarmProfile == null);
+    }
+
+    private static async Task CheckUpdateAlarmProfile()
+    {
+        var ct = new CancellationToken();
+        await using var myContext = new MyContext();
+
+        var alarmProfilePatch = new AlarmProfilePatch(null, Name: "Another", null, null);
+        var alarmProfileRepo = new AlarmProfileRepository(myContext);
+        await alarmProfileRepo.UpdateAlarmProfile(2, alarmProfilePatch, ct);
+        var alarmProfile = await alarmProfileRepo.GetById(2, ct);
+        Debug.Assert(alarmProfile != null);
+        Debug.Assert(alarmProfile.Name == "Another");
+
     }
 }
