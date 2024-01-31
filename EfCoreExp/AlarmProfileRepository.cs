@@ -120,17 +120,7 @@ public class AlarmProfileRepository(MyContext myContext) : IAlarmProfileReposito
     private async Task PatchAlarmProfile(AlarmProfileEf alarmProfile, AlarmProfilePatch patch, CancellationToken ct)
     {
         if (patch.Name is not null) { alarmProfile.Name = patch.Name; }
-
-        if (patch.Kind is not null)
-        {
-            alarmProfile.Kind = (AlarmProfileKind)patch.Kind;
-        }
-
-        if (patch.IsProvisioningMode is not null)
-        {
-            alarmProfile.IsProvisioningMode = (bool)patch.IsProvisioningMode;
-        }
-
+       
         await myContext.SaveChangesAsync(ct);
     }
 }

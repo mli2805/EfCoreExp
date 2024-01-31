@@ -18,11 +18,12 @@ public class ThresholdConfiguration : IEntityTypeConfiguration<ThresholdEf>
             .IsUnicode(false)
             .IsRequired();
 
-        builder.Property(x => x.IsEnabled).IsRequired();
-
         builder.Property(x => x.Minor).IsRequired(false);
+        builder.Property(x => x.IsMinorOn).IsRequired();
         builder.Property(x => x.Major).IsRequired(false);
+        builder.Property(x => x.IsMajorOn).IsRequired();
         builder.Property(x => x.Critical).IsRequired(false);
+        builder.Property(x => x.IsCriticalOn).IsRequired();
 
         builder.HasOne<AlarmProfileEf>()
             .WithMany(x=>x.Thresholds)

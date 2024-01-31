@@ -41,30 +41,26 @@ internal class Program
     {
         var ct = new CancellationToken();
         await using var myContext = new MyContext();
-        var thr1 = new Threshold() { Parameter = ThresholdParameter.LossInEvent, Critical = 2.1 };
+        var thr1 = new Threshold() { Parameter = ThresholdParameter.LossInEvent, IsCriticalOn = true, Critical = 2.1 };
         var thr2 = new Threshold()
         {
             Parameter = ThresholdParameter.FiberAttenuation,
-            Minor = 0.5,
-            Major = 1.0,
-            Critical = 2.0
+            IsMinorOn = true, Minor = 0.5,
+            IsMajorOn = true, Major = 1.0,
+            IsCriticalOn = true, Critical = 2.0
         };
-        var thr3 = new Threshold() { Parameter = ThresholdParameter.PortHealth, IsEnabled = true, Critical = 99.99 };
-        var thr4 = new Threshold() { Parameter = ThresholdParameter.SegmentAttenuation, Critical = 6 };
+        var thr3 = new Threshold() { Parameter = ThresholdParameter.PortHealth, IsCriticalOn = true, Critical = 99.99 };
+        var thr4 = new Threshold() { Parameter = ThresholdParameter.SegmentAttenuation, IsCriticalOn = true, Critical = 6 };
 
         var alarmProfile1 = new AlarmProfile()
         {
-            Kind = AlarmProfileKind.P2P,
             Name = "Customers1",
-            IsProvisioningMode = false,
             Thresholds = new List<Threshold> { thr1, thr2 }
         };
 
         var alarmProfile2 = new AlarmProfile()
         {
-            Kind = AlarmProfileKind.P2P,
             Name = "Default",
-            IsProvisioningMode = false,
             Thresholds = new List<Threshold> { thr3, thr4 }
         };
 
@@ -85,7 +81,7 @@ internal class Program
         var alarmProf2 = await alarmProfileRepo.GetById(2, ct);
         Debug.Assert(alarmProf2 != null);
         Debug.Assert(alarmProf2.Thresholds.Count == 2);
-        Debug.Assert(alarmProf2.Thresholds.First(t => t.Parameter == ThresholdParameter.PortHealth).IsEnabled);
+        Debug.Assert(alarmProf2.Thresholds.First(t => t.Parameter == ThresholdParameter.PortHealth).IsCriticalOn);
     }
 
     private static async Task CheckAssignAlarmProfileToMonitoringPort()
@@ -108,12 +104,19 @@ internal class Program
         await using var myContext = new MyContext();
 
         var alarmProfileRepo = new AlarmProfileRepository(myContext);
-        await alarmProfileRepo.Delete(1, ct);
+        try
+        {
+            await alarmProfileRepo.Delete(1, ct);
+        }
+        catch (Exception e)
+        {
+            Debug.Assert(e.GetType() == typeof(DbUpdateException));
+        }
         var list2 = await alarmProfileRepo.GetAll(ct);
-        Debug.Assert(list2.Count == 1);
+        Debug.Assert(list2.Count == 2);
 
         var alarmProfile = await alarmProfileRepo.GetForMonitoringPort(3, ct);
-        Debug.Assert(alarmProfile == null);
+        Debug.Assert(alarmProfile != null);
     }
 
     private static async Task CheckUpdateAlarmProfile()
@@ -121,7 +124,7 @@ internal class Program
         var ct = new CancellationToken();
         await using var myContext = new MyContext();
 
-        var alarmProfilePatch = new AlarmProfilePatch(null, Name: "Another", null, null);
+        var alarmProfilePatch = new AlarmProfilePatch(Name: "Another", null);
         var alarmProfileRepo = new AlarmProfileRepository(myContext);
         await alarmProfileRepo.UpdateAlarmProfile(2, alarmProfilePatch, ct);
         var alarmProfile = await alarmProfileRepo.GetById(2, ct);

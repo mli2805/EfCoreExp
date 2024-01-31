@@ -11,14 +11,5 @@ public class AlarmProfileConfiguration : IEntityTypeConfiguration<AlarmProfileEf
 
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Name).IsRequired();
-
-        builder.Property(x => x.Kind)
-            .HasConversion(
-                v => v.ToString(),
-                v => (AlarmProfileKind)Enum.Parse(typeof(AlarmProfileKind), v))
-            .IsUnicode(false)
-            .IsRequired();
-
-        builder.Property(x => x.IsProvisioningMode).IsRequired();
     }
 }

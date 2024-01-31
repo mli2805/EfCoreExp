@@ -7,9 +7,7 @@ public static class EfMapper
         return new AlarmProfile()
         {
             Id = alarmProfileEf.Id,
-            Kind = alarmProfileEf.Kind,
             Name = alarmProfileEf.Name,
-            IsProvisioningMode = alarmProfileEf.IsProvisioningMode,
 
             Thresholds = alarmProfileEf.Thresholds.Select(t => t.FromEf()).ToList(),
         };
@@ -20,9 +18,7 @@ public static class EfMapper
         return new AlarmProfileEf()
         {
             Id = alarmProfile.Id,
-            Kind = alarmProfile.Kind,
             Name = alarmProfile.Name,
-            IsProvisioningMode = alarmProfile.IsProvisioningMode,
 
             Thresholds = alarmProfile.Thresholds.Select(t => t.ToEf()).ToList(),
         };
@@ -34,7 +30,9 @@ public static class EfMapper
         {
             Id = thresholdEf.Id,
             Parameter = thresholdEf.Parameter,
-            IsEnabled = thresholdEf.IsEnabled,
+            IsMinorOn = thresholdEf.IsMinorOn,
+            IsMajorOn = thresholdEf.IsMajorOn,
+            IsCriticalOn = thresholdEf.IsCriticalOn,
             Minor = thresholdEf.Minor,
             Major = thresholdEf.Major,
             Critical = thresholdEf.Critical,
@@ -47,7 +45,9 @@ public static class EfMapper
         {
             Id = threshold.Id,
             Parameter = threshold.Parameter,
-            IsEnabled = threshold.IsEnabled,
+            IsMinorOn = threshold.IsMinorOn,
+            IsMajorOn = threshold.IsMajorOn,
+            IsCriticalOn = threshold.IsCriticalOn,
             Minor = threshold.Minor,
             Major = threshold.Major,
             Critical = threshold.Critical,

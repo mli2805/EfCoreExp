@@ -2,8 +2,10 @@
 
 public record ThresholdPatch
 (
-    ThresholdParameter? Parameter,
-    bool? IsEnabled,
+    ThresholdParameter Parameter,
+    bool IsMinorOn,
+    bool IsMajorOn,
+    bool IsCriticalOn,
     double? Minor,
     double? Major,
     double? Critical

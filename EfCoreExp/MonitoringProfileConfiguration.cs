@@ -13,7 +13,7 @@ public class MonitoringProfileConfiguration : IEntityTypeConfiguration<Monitorin
         builder.HasOne<AlarmProfileEf>()
             .WithMany(x => x.MonitoringPorts)
             .HasForeignKey(x => x.AlarmProfileId)
-            .OnDelete(DeleteBehavior.SetNull)
+            .OnDelete(DeleteBehavior.Restrict)
             .IsRequired(false);
 
     }
